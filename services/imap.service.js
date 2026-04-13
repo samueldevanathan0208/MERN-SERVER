@@ -47,7 +47,7 @@ export const syncEmails = async (db) => {
                 console.log(`📩 Processing email: ${emailData.subject} from ${emailData.from}`);
 
                 // AI Analysis
-                const { priority } = await analyzeEmail(emailData.body);
+                const { priority, category } = await analyzeEmail(emailData.subject, emailData.body);
 
                 // Create Ticket
                 const ticketData = {
@@ -55,7 +55,9 @@ export const syncEmails = async (db) => {
                     description: emailData.body,
                     customerEmail: emailData.from,
                     priority,
+                    category,
                 };
+
 
                 if (db) {
                     await createTicketService(db, ticketData);

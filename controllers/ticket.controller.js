@@ -29,7 +29,7 @@ export const createTicketFromEmail = async (req, res) => {
 
         // Step 1: AI Analysis
         console.log(`Analyzing email from ${from}: ${subject}`);
-        const { priority } = await analyzeEmail(body);
+        const { priority, category } = await analyzeEmail(subject, body);
 
         // Step 2: Create Ticket in DB
         const db = req.db;
@@ -42,6 +42,7 @@ export const createTicketFromEmail = async (req, res) => {
         };
 
         const newTicket = await createTicketService(db, ticketData);
+
 
         console.log(`Ticket created: ${newTicket._id} with priority ${priority}`);
 

@@ -21,15 +21,18 @@ Only return valid JSON.`;
 
 /**
  * Helpdesk Email Analyzer using OpenRouter
+ * @param {string} subject
  * @param {string} emailBody 
- * @returns {Promise<{priority: string}>}
+ * @returns {Promise<{priority: string, category: string}>}
  */
-export const analyzeEmail = async (emailBody) => {
+export const analyzeEmail = async (subject, emailBody) => {
     try {
         const api_key = process.env.OPENROUTER_API_KEY;
         if (!api_key) {
             throw new Error("OPENROUTER_API_KEY is missing");
         }
+
+        const fullText = `Subject: ${subject}\n\nBody: ${emailBody}`;
 
         // Using native fetch (available in Node.js 18+)
         const response = await fetch(OPENROUTER_URL, {
@@ -43,8 +46,8 @@ export const analyzeEmail = async (emailBody) => {
             body: JSON.stringify({
                 model: "openai/gpt-4o-mini",
                 messages: [
-                    { role: "system", content: CLASSIFIER_PROMPT },
-                    { role: "user", content: `Email Body: ${emailBody}` }
+                    { role: "system", content: CLASSIFIER_PROMPT + "\n\nAlso return a 'category' field: Technical, Billing, General, or Urgent." },
+                    { role: "user", content: `Analyze this email:\n${fullText}` }
                 ],
                 response_format: { type: "json_object" }
             })
@@ -61,11 +64,14 @@ export const analyzeEmail = async (emailBody) => {
 
         return {
             priority: result.priority || "Medium",
+            category: result.category || "General"
         };
     } catch (error) {
         console.error("AI Analysis Error:", error.message);
         return {
             priority: "Medium",
+            category: "General"
         };
     }
 };
+

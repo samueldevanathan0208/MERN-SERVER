@@ -4,19 +4,21 @@ import cors from 'cors'
 dotenv.config()
 import authRouter from "./routes/routes.routes.js"
 import ticketRouter from "./routes/ticket.routes.js"
-import { client } from "./config/db.js"
+import { client, connectDB } from "./config/db.js"
 import { initEmailListener } from "./services/imap.service.js"
+import { dbMiddleware } from "./middleware/db.middleware.js"
 
 const app = express()
 app.use(express.json());
 app.use(cors());
+app.use(dbMiddleware); // Ensure DB is connected for every request
 const PORT = process.env.PORT || 4000
 
-const db = client.db("Skillnest");
-app.locals.db = db;
-
-// Initialize IMAP Listener
-initEmailListener(db);
+// Initialize IMAP Listener after DB connects
+connectDB().then((client) => {
+  const db = client.db("Skillnest");
+  initEmailListener(db);
+});
 
 app.get('/', (req, res) => {
   res.send('Hello World!')

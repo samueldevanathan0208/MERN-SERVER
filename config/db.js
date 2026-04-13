@@ -3,29 +3,34 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const client = new MongoClient(process.env.MONGO_URL, {
+let client = null;
+let clientPromise = null;
+
+const options = {
     family: 4,
     tls: true,
     tlsAllowInvalidCertificates: true,
     minPoolSize: 1,
     maxPoolSize: 10
-});
+};
 
-export async function connectDB() {
-    try {
-        if (client.topology && client.topology.isConnected()) {
-            return client;
-        }
-        await client.connect();
-        console.log("✅ MongoDB Connected");
-        return client;
-    } catch (error) {
-        console.error("❌ MongoDB Connection Error:", error.message);
-        throw error;
-    }
+if (!process.env.MONGO_URL) {
+    throw new Error("Please add your Mongo URI to .env");
 }
 
-// Still call it locally to start connecting
-connectDB().catch(() => { });
+export async function connectDB() {
+    if (clientPromise) {
+        return clientPromise;
+    }
 
+    client = new MongoClient(process.env.MONGO_URL, options);
+    clientPromise = client.connect().then((client) => {
+        console.log("✅ MongoDB Connected");
+        return client;
+    });
+
+    return clientPromise;
+}
+
+// Export the client directly for use in IMAP service (which runs outside req/res)
 export { client };

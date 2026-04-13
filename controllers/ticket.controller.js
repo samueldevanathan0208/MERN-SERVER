@@ -18,7 +18,7 @@ export const createTicketFromEmail = async (req, res) => {
         const { priority } = await analyzeEmail(body);
 
         // Step 2: Create Ticket in DB
-        const db = req.app.locals.db;
+        const db = req.db;
         const ticketData = {
             subject,
             description: body,
@@ -44,9 +44,7 @@ export const createTicketFromEmail = async (req, res) => {
 // Handles the GET /tickets request to retrieve all tickets.
 export const getTickets = async (req, res) => {
     try {
-        // Ensure DB is connected
-        await connectDB();
-        const db = req.app.locals.db;
+        const db = req.db;
         const { agent } = req.query;
         const filters = agent ? { assignedTo: agent } : {};
 
@@ -62,7 +60,7 @@ export const updateTicket = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
-        const db = req.app.locals.db;
+        const db = req.db;
 
         // If status is being updated to Resolved, trigger email notification
         if (updates.status === 'Resolved') {
@@ -84,7 +82,7 @@ export const updateTicket = async (req, res) => {
 export const getTicketStats = async (req, res) => {
     try {
         const { agent } = req.query;
-        const db = req.app.locals.db;
+        const db = req.db;
         const stats = await getTicketStatsService(db, agent);
         res.json(stats);
     } catch (error) {
@@ -97,7 +95,7 @@ export const getTicketStats = async (req, res) => {
 
 export const getCustomers = async (req, res) => {
     try {
-        const db = req.app.locals.db;
+        const db = req.db;
         const customers = await getCustomersService(db);
         res.json(customers);
     } catch (error) {

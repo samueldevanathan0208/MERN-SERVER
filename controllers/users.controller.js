@@ -7,7 +7,7 @@ import {
 
 export const createUser = async (req, res) => {
     try {
-        const result = await createUserService(req.app.locals.db, req.body);
+        const result = await createUserService(req.db, req.body);
         res.json(result);
     } catch (err) {
         console.error("Create User Error:", err);
@@ -17,7 +17,7 @@ export const createUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
     try {
-        const result = await loginUserService(req.app.locals.db, req.body);
+        const result = await loginUserService(req.db, req.body);
         res.json(result);
     } catch (err) {
         console.error("Login Error:", err);
@@ -26,7 +26,7 @@ export const loginUser = async (req, res) => {
 };
 export const getAgents = async (req, res) => {
     try {
-        const db = req.app.locals.db;
+        const db = req.db;
         const agents = await getAgentsService(db);
         res.json(agents);
     } catch (error) {
@@ -37,7 +37,7 @@ export const getAgents = async (req, res) => {
 
 export const getTopAgents = async (req, res) => {
     try {
-        const db = req.app.locals.db;
+        const db = req.db;
         const agents = await getTopAgentsService(db);
         res.json(agents);
     } catch (error) {

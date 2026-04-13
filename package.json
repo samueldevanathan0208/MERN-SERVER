@@ -1,0 +1,28 @@
+{
+  "name": "express_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "imapflow": "^1.0.147",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.3",
+    "mailparser": "^3.6.8",
+    "mongodb": "^7.1.1",
+    "nodemailer": "^8.0.4",
+    "nodemon": "^3.1.14",
+    "openai": "^6.33.0"
+  }
+}

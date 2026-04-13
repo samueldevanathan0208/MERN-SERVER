@@ -31,6 +31,8 @@ export const syncEmails = async (db) => {
             const messages = await client.search({ unseen: true });
             console.log(`🔍 Found ${messages.length} unread emails.`);
 
+            let processedCount = 0;
+
             for (const uid of messages) {
                 const message = await client.fetchOne(uid, { source: true });
                 if (!message) continue;
@@ -41,6 +43,8 @@ export const syncEmails = async (db) => {
                     from: parsed.from?.value[0]?.address || "unknown@example.com",
                     body: parsed.text || parsed.html || "No Body",
                 };
+
+                console.log(`📩 Processing email: ${emailData.subject} from ${emailData.from}`);
 
                 // AI Analysis
                 const { priority } = await analyzeEmail(emailData.body);
@@ -57,14 +61,16 @@ export const syncEmails = async (db) => {
                     await createTicketService(db, ticketData);
                     // Mark as seen
                     await client.messageFlagsAdd(uid, ["\\Seen"]);
+                    processedCount++;
                 }
             }
+
+            console.log(`✅ Sync complete. Processed ${processedCount} emails.`);
+            await client.logout();
+            return { success: true, processedCount };
         } finally {
             lock.release();
         }
-
-        await client.logout();
-        return { success: true, processed: 0 }; // messages.length could be tracked
     } catch (error) {
         console.error("❌ IMAP Sync Error:", error.message);
         try { await client.logout(); } catch (e) { }

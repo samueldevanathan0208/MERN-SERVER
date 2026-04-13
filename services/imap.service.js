@@ -68,7 +68,7 @@ export const syncEmails = async (db) => {
     } catch (error) {
         console.error("❌ IMAP Sync Error:", error.message);
         try { await client.logout(); } catch (e) { }
-        throw error;
+        throw new Error(`IMAP Sync Failed: ${error.message}`);
     }
 };
 

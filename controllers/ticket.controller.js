@@ -13,7 +13,7 @@ export const syncTickets = async (req, res) => {
         res.json({ message: "Emails synced successfully" });
     } catch (error) {
         console.error("Sync Error:", error);
-        res.status(500).json({ error: "Failed to sync emails" });
+        res.status(500).json({ error: "Failed to sync emails", details: error.message });
     }
 };
 

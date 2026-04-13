@@ -13,11 +13,15 @@ app.use(cors());
 app.use(dbMiddleware); // Ensure DB is connected for every request
 const PORT = process.env.PORT || 4000
 
-// Initialize IMAP Listener after DB connects
-connectDB().then((client) => {
-  const db = client.db("Skillnest");
-  initEmailListener(db);
-});
+// Initialize IMAP Listener after DB connects (safe for local, will timeout on Vercel)
+connectDB()
+  .then((client) => {
+    const db = client.db("Skillnest");
+    initEmailListener(db);
+  })
+  .catch(err => {
+    console.warn("Initial DB connection failed (this is normal if Vercel is still deploying or env vars are missing):", err.message);
+  });
 
 app.get('/', (req, res) => {
   res.send('Hello World!')

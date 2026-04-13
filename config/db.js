@@ -9,7 +9,6 @@ let clientPromise = null;
 const options = {
     family: 4,
     tls: true,
-    tlsAllowInvalidCertificates: true,
     minPoolSize: 1,
     maxPoolSize: 10
 };

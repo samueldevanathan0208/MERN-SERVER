@@ -1,5 +1,5 @@
 import express from "express";
-import { createTicketFromEmail, getTickets, updateTicket, getTicketStats, getCustomers } from "../controllers/ticket.controller.js";
+import { createTicketFromEmail, getTickets, updateTicket, getTicketStats, getCustomers, syncTickets } from "../controllers/ticket.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 
 const router = express.Router();
@@ -19,6 +19,7 @@ router.post("/email", createTicketFromEmail);
  */
 router.get("/", getTickets);
 router.get("/stats", getTicketStats);
+router.get("/sync", syncTickets);
 router.get("/customers", getCustomers);
 router.patch("/:id", updateTicket);
 

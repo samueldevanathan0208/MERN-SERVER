@@ -14,16 +14,6 @@ app.use(cors());
 app.use(dbMiddleware); // Ensure DB is connected for every request
 const PORT = process.env.PORT || 4000
 
-// Initialize IMAP Listener after DB connects
-connectDB()
-  .then((client) => {
-    const db = client.db("Skillnest");
-    initEmailListener(db);
-  })
-  .catch(err => {
-    console.error("Initial DB connection failed:", err.message);
-  });
-
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })

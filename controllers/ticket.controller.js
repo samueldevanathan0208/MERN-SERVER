@@ -1,8 +1,22 @@
 import { createTicketService, getTicketsService, updateTicketService, getTicketStatsService, getCustomersService, getTicketByIdService } from "../services/ticket.service.js";
 import { sendResolutionEmail } from "../services/email.service.js";
 import { analyzeEmail } from "../services/ai.service.js";
+import { syncEmails } from "../services/imap.service.js";
 import { connectDB } from "../config/db.js";
 import { ObjectId } from "mongodb";
+
+// Triggers manual sync of emails to tickets
+export const syncTickets = async (req, res) => {
+    try {
+        const db = req.db;
+        await syncEmails(db);
+        res.json({ message: "Emails synced successfully" });
+    } catch (error) {
+        console.error("Sync Error:", error);
+        res.status(500).json({ error: "Failed to sync emails" });
+    }
+};
+
 
 // Handles the POST /tickets/email request to convert an email to a ticket.
 export const createTicketFromEmail = async (req, res) => {

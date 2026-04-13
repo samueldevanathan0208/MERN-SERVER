@@ -25,8 +25,11 @@ app.get('/', (req, res) => {
 app.use("/auth", authRouter)
 app.use("/tickets", ticketRouter)
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`)
-})
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Example app listening on port ${PORT}`)
+  })
+}
 
+export default app;
 export { client }

@@ -1,29 +1,41 @@
 import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
+
 dotenv.config();
 
+let client = null;
 let clientPromise = null;
 
-// Database connection helper
-export async function connectDB() {
-    if (!process.env.MONGO_URL) {
-        throw new Error("MONGO_URL environment variable is missing!");
-    }
-    if (!clientPromise) {
-        const client = new MongoClient(process.env.MONGO_URL, { family: 4, tls: true });
-        clientPromise = client.connect();
-    }
-    return clientPromise;
+const options = {
+    family: 4,
+    tls: true,
+    minPoolSize: 1,
+    maxPoolSize: 10
+};
+
+if (!process.env.MONGO_URL) {
+    throw new Error("Please add your Mongo URI to .env");
 }
 
-// Simple Middleware to ensure connectivity
-export const dbMiddleware = async (req, res, next) => {
-    try {
-        const client = await connectDB();
-        req.db = client.db("Skillnest");
-        req.app.locals.db = req.db;
-        next();
-    } catch (e) {
-        res.status(500).json({ error: "DB connection failed" });
+export async function connectDB() {
+    if (clientPromise) {
+        return clientPromise;
     }
-};
+
+    try {
+        client = new MongoClient(process.env.MONGO_URL, options);
+        clientPromise = client.connect().then((connectedClient) => {
+            return connectedClient;
+        }).catch((err) => {
+            clientPromise = null; // Reset on failure
+            throw err;
+        });
+        return clientPromise;
+    } catch (err) {
+        clientPromise = null;
+        throw err;
+    }
+}
+
+// Export the client directly for use in IMAP service
+export { client };

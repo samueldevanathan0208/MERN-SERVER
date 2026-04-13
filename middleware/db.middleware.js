@@ -11,6 +11,10 @@ export const dbMiddleware = async (req, res, next) => {
 
         next();
     } catch (error) {
-        res.status(500).json({ error: "Database connection failed" });
+        console.error("Database Middleware Error:", error.message);
+        res.status(500).json({
+            error: "Database connection failed",
+            details: error.message
+        });
     }
 };

@@ -23,13 +23,20 @@ export async function connectDB() {
         return clientPromise;
     }
 
-    client = new MongoClient(process.env.MONGO_URL, options);
-    clientPromise = client.connect().then((client) => {
-        console.log("✅ MongoDB Connected");
-        return client;
-    });
-
-    return clientPromise;
+    try {
+        client = new MongoClient(process.env.MONGO_URL, options);
+        clientPromise = client.connect().then((connectedClient) => {
+            console.log("✅ MongoDB Connected");
+            return connectedClient;
+        }).catch((err) => {
+            clientPromise = null; // Reset on failure
+            throw err;
+        });
+        return clientPromise;
+    } catch (err) {
+        clientPromise = null;
+        throw err;
+    }
 }
 
 // Export the client directly for use in IMAP service (which runs outside req/res)

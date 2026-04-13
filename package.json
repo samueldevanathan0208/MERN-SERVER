@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build": "echo 'Building...'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
@@ -22,7 +23,9 @@
     "mailparser": "^3.6.8",
     "mongodb": "^7.1.1",
     "nodemailer": "^8.0.4",
-    "nodemon": "^3.1.14",
     "openai": "^6.33.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }

@@ -4,9 +4,8 @@ import cors from 'cors'
 dotenv.config()
 import authRouter from "./routes/routes.routes.js"
 import ticketRouter from "./routes/ticket.routes.js"
-import { client, connectDB } from "./config/db.js"
+import { connectDB, dbMiddleware } from "./config/db.js"
 import { initEmailListener } from "./services/imap.service.js"
-import { dbMiddleware } from "./middleware/db.middleware.js"
 
 const app = express()
 app.use(express.json());

@@ -21,7 +21,6 @@ export const sendResolutionEmail = async (to, subject) => {
                 <h2 style="color: #16a34a;">Your Ticket has been Resolved!</h2>
                 <p>Hello,</p>
                 <p>We are happy to inform you that your ticket regarding <strong>"${subject}"</strong> has been resolved by our support team.</p>
-                <p>If you have any further questions or if the issue persists, please feel free to reply to this email.</p>
                 <br/>
                 <p>Best Regards,</p>
                 <p><strong>Helpdesk Support Team</strong></p>
